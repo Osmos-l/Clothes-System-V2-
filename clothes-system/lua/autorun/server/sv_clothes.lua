@@ -63,7 +63,7 @@ hook.Add("InitPostEntity", "Clothes-InitTable", timer.Simple(0.2,function() clot
 
 --[[-----------------[[--
 
-	SPAWN ALL NPC
+	SPAWN ALL ENTITIES
 
 --]]-----------------]]--
 
