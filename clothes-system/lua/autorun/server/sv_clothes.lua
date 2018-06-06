@@ -56,10 +56,6 @@ local function clothes_createdata()
 		file.Write("clothes_data/" .. game.GetMap() .."/wardrobe.txt", "[]" )
 	end
 
-	if not file.Exists("clothes_data/" .. game.GetMap() .. "/cabinet.txt", "DATA") then
-		file.Write("clothes_data/" .. game.GetMap() .."/cabinet.txt", "[]" )
-	end
-
 	Msg("[ Clothes ] : Data created with success !\n")
 end
 
