@@ -286,7 +286,8 @@ net.Receive("Clothes-Server", function(len, ply)
 				return
 			end
 
-			sql.Query("INSERT INTO clothees_data VALUES( NULL,'" .. info.type .."','" .. info.name .. "','" .. info.model .. "','" .. tonumber(info.price) .. "','[]' , '[]' ) ")
+			local sendquery = "INSERT INTO clothees_data VALUES( NULL," .. sql.SQLStr( info.type ) .."," .. sql.SQLStr( info.name ) .. "," .. sql.SQLStr( info.model ) .. "," .. tonumber(info.price) .. ",'[]' , '[]' ) "
+			sql.Query( sendquery )
 			DarkRP.notify(ply, 0, 1, clothes.lang[lvr].serv8)
 
 		elseif where == -6 then -- [[ PLAYER BUY CLOTHE ]]
@@ -560,8 +561,8 @@ net.Receive("Clothes-Server", function(len, ply)
 				DarkRP.notify(ply, 1, 1, clothes.lang[lvr].serv7)
 				return
 			end
-
-			local xdz = sql.Query([[UPDATE clothees_data SET name = ']] .. newdata.name .. [[', model = ']] .. newdata.model .. [[', price = ']] .. tonumber(newdata.price) .. [[', type = ']] .. newdata.type .. [[' WHERE  id = ]] .. itemkey)
+			
+			sql.Query([[UPDATE clothees_data SET name = ]] .. sql.SQLStr( newdata.name ).. [[, model = ]] .. sql.SQLStr( newdata.model ) .. [[, price = ']] .. tonumber(newdata.price) .. [[', type = ]] .. sql.SQLStr( newdata.type ).. [[ WHERE  id = ]] .. itemkey)
 			DarkRP.notify(ply, 0, 2, clothes.lang[lvr].serv23)
 
 			local itemsend = sql.Query("SELECT * FROM clothees_data ")
