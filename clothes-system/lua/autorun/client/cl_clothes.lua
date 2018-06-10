@@ -80,6 +80,10 @@ local send
 		txt1 = clothes.lang[lvr].cl7
 		txt2 = clothes.lang[lvr].cl8 .. " " .. itemname .. " ?"
 		send = 3
+	elseif what == 5 then -- Refound clothe
+		txt1 = clothes.lang[lvr].cl26
+		txt2 = clothes.lang[lvr].cl27 .. " " .. itemname .. " ?"
+		send = 4
 	end
 
 	local notifyp = vgui.Create("DFrame")
@@ -240,13 +244,15 @@ net.Receive("Clothes-Client", function(len, pl)
 					local buybtext
 					local buybcolor
 					local colorhover
+					local netsend 
 					if table.HasValue( util.JSONToTable(v.havebuy), LocalPlayer():SteamID64() ) then
 						buybtext = clothes.lang[lvr].cl16 -- have buy
+						netsend = 5
 						buybcolor = clothes.theme[pdr].cancel
 						colorhover = clothes.theme[pdr].cancelhover
 					else
 						buybtext = clothes.lang[lvr].cl17 -- buy
-						netsend = 3
+						netsend = 1
 						buybcolor = clothes.theme[pdr].buy
 						colorhover = clothes.theme[pdr].buyhover
 						
@@ -306,7 +312,7 @@ net.Receive("Clothes-Client", function(len, pl)
 						end
 
 						buyb.DoClick = function()
-							clothes_notify(1, v.name , v.id, npc)
+							clothes_notify(netsend, v.name , v.id, npc)
 						end
 
 						if clothes.AdminTeam[ LocalPlayer():GetUserGroup() ] then

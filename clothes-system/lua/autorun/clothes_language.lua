@@ -48,6 +48,10 @@ clothes.lang["FR"] = {
 		// Where == 3
 		serv26 = "Tu as retiré la tenue !",
 
+		// Where == 4 
+		serv27 = "Tu n'as pas acheté la tenue !",
+		serv28 = "Tenue revendue !",
+
 	// Clothes-Client
 
 		// Notify 
@@ -68,7 +72,7 @@ clothes.lang["FR"] = {
 		cl13 = "Collection Femme",
 		cl14 = "Collection Enfant",
 		cl15 = "Rechercher",
-		cl16 = "Possédé",
+		cl16 = "Revendre",
 		cl17 = "acheter",
 
 		// Where == -6
@@ -84,6 +88,10 @@ clothes.lang["FR"] = {
 
 		// Add Model
 		cl25 = "CLOTHES : Ajouter une tenue",
+
+		// Refound Clothes 
+		cl26 = "Revente de tenue",
+		cl27 = "Souhaite-tu vraiment revendre :",
 }
 
 clothes.lang["EN"] = {
@@ -136,6 +144,10 @@ clothes.lang["EN"] = {
 		// Where == 3
 		serv26 = "You have removed the outfit!",
 
+		// where == 4
+		serv27 = "You did not buy the outfit!",
+		serv28 = "Sold out!",
+
 	// Clothes-Client
 
 		// Notify
@@ -156,8 +168,8 @@ clothes.lang["EN"] = {
 		cl13 = "Women's Collection",
 		cl14 = "Child Collection",
 		cl15 = "Search",
-		cl16 = "Possessed",
-		cl17 = "buy",
+		cl16 = "Refound",
+		cl17 = "Buy",
 
 		// Where == -6
 		cl18 = "CLOTHES: Edit Model",
@@ -173,4 +185,7 @@ clothes.lang["EN"] = {
 		// Add Model
 		cl25 = "CLOTHES: Add an outfit",
 
+		// Refound Clothes
+		cl26 = "Resale of holding",
+		cl27 = "Do you really want to sell:",
 }

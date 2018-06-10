@@ -43,7 +43,7 @@ clothes.LanguageUsed = "EN"
 
 --]]-----------------]]--
 
-clothes.ThemeUsed = "GREEN"
+clothes.ThemeUsed = "BLUE"
 
 --[[-----------------[[--
 
@@ -52,7 +52,7 @@ clothes.ThemeUsed = "GREEN"
 			- Yes = true 
 			- No = false
 				- If TRUE you need to do nothing.
-				- If FALSE you need to add the content addon present on the workshop on you'r server collection. ( https://steamcommunity.com/sharedfiles/filedetails/?id=1402557868 )
+				- If FALSE you need to add the content addon present on the workshop on you'r server collection. ( link )
 
 --]]-----------------]]--
 

@@ -272,7 +272,7 @@ net.Receive("Clothes-Server", function(len, ply)
 
 			if not clothes.AdminTeam[ ply:GetUserGroup() ] then return end
 
-			if  info.name == ( nil or clothes.lang[lvr].serv1 )  then
+			if info.name == ( nil or clothes.lang[lvr].serv1 )  then
 				DarkRP.notify(ply, 1 , 1, clothes.lang[lvr].serv2)
 				return
 			elseif info.model == ( nil or clothes.lang[lvr].serv3 ) then
@@ -634,6 +634,51 @@ net.Receive("Clothes-Server", function(len, ply)
 					ply:SetModel(jobmdl)
 					DarkRP.notify(ply, 0, 2, clothes.lang[lvr].serv26)
 				end
+			end
+		elseif where == 4 then -- [[ PLAYER REFOUND CLOTHES ]]--
+		local itemkey = net.ReadInt(16)
+		local npc = net.ReadEntity()
+
+			if not npc:GetClass() == "clothes_npc" then return end
+			if ply:GetPos():Distance(npc:GetPos()) > 100 then return end
+
+			local data = sql.Query("SELECT * FROM clothees_data WHERE id = " .. itemkey)
+			if not data then
+				DarkRP.notify(ply, 1, 2, clothes.lang[lvr].serv27)
+				return
+			end
+
+			for k, v in pairs(data) do
+				
+				if v.havebuy == "[]" then
+					DarkRP.notify(ply, 1, 2, clothes.lang[lvr].serv27)
+					return
+				else
+					if not table.HasValue( util.JSONToTable(v.havebuy), ply:SteamID64() ) then
+						DarkRP.notify(ply, 1, 2, clothes.lang[lvr].serv27)
+						return
+					end
+				end
+
+				if v.restrict != "[]" then
+				local justrestrict = util.JSONToTable( v.restrict )
+					if table.Count( justrestrict["groups"] ) >= 1 and not table.HasValue(justrestrict["groups"], ply:GetUserGroup() ) then
+						DarkRP.notify(ply, 1 , 2, clothes.lang[lvr].serv11)
+						return
+					end
+					if table.Count( justrestrict["jobs"]  ) >= 1 and not table.HasValue(justrestrict["jobs"], team.GetName( ply:Team() ) )then
+						DarkRP.notify(ply, 1 , 2, clothes.lang[lvr].serv12)
+						return
+					end
+				end
+
+				local tablebuy = util.JSONToTable(v.havebuy)
+				table.RemoveByValue( tablebuy, ply:SteamID64() )
+				sql.Query( [[UPDATE clothees_data SET havebuy = ']] .. util.TableToJSON( tablebuy ) .. [[' WHERE id = ]] .. itemkey )
+
+				local price = math.Round( tonumber(v.price) / 2 )
+				ply:addMoney( price )
+				DarkRP.notify(ply, 0, 2,  clothes.lang[lvr].serv28)
 			end
 
 		end
