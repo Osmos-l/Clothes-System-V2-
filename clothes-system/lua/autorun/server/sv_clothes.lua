@@ -59,7 +59,7 @@ local function clothes_createdata()
 	Msg("[ Clothes ] : Data created with success !\n")
 end
 
-hook.Add("InitPostEntity", "Clothes-InitTable", timer.Simple(0.2,function() clothes_createdata() end) )
+hook.Add("InitPostEntity", "Clothes-InitTable", timer.Simple(0.2, function() clothes_createdata() end) )
 
 --[[-----------------[[--
 
@@ -79,28 +79,17 @@ local function clothes_spawnent()
 		local fileread = file.Read("clothes_data/" .. game.GetMap() .. "/npc.txt", "DATA")
 		local data = util.JSONToTable(fileread)
 
-		local count = 0
 		for k, v in pairs(data) do
-			local spawnang = {}
-			local spawnpos = {}
-			count = count + 1
-
-			for k, v in pairs(v.pos) do
-				spawnpos[k] = v
-			end
-			for k, v in pairs (v.angle) do
-				spawnang[k] = v
-			end
 
 				local npc = ents.Create("clothes_npc")
-			npc:SetPos( Vector( tonumber(spawnpos[1]), tonumber(spawnpos[2]), tonumber(spawnpos[3]) ) )
-			npc:SetAngles( Angle( tonumber(spawnang[1]), tonumber(spawnang[2]), tonumber(spawnang[3]) ) ) 
+			npc:SetPos( Vector( tonumber(v.pos[1]), tonumber(v.pos[2]), tonumber(v.pos[3]) ) )
+			npc:SetAngles( Angle( tonumber(v.angle[1]), tonumber(v.angle[2]), tonumber(v.angle[3]) ) ) 
 			npc:DropToFloor()
 			npc:Spawn()
 			npc:Activate()
 
 		end
-		Msg("[ Clothes ] : All NPC was spawned !(" .. count .. ")\n")
+		Msg("[ Clothes ] : All NPC was spawned !(" .. #data .. ")\n")
 	end)
 
 	timer.Simple(0.6,function() 
@@ -113,27 +102,16 @@ local function clothes_spawnent()
 		local fileread = file.Read("clothes_data/" .. game.GetMap() .. "/wardrobe.txt", "DATA")
 		local data = util.JSONToTable(fileread)
 
-		local count = 0
 		for k, v in pairs(data) do
-			local spawnang = {}
-			local spawnpos = {}
-			count = count + 1
-
-			for k, v in pairs(v.pos) do
-				spawnpos[k] = v
-			end
-			for k, v in pairs (v.angle) do
-				spawnang[k] = v
-			end
 
 				local npc = ents.Create("clothes_wardrobe")
-			npc:SetPos( Vector( tonumber(spawnpos[1]), tonumber(spawnpos[2]), tonumber(spawnpos[3] ) ) )
-			npc:SetAngles( Angle( tonumber(spawnang[1]), tonumber(spawnang[2]), tonumber(spawnang[3]) ) ) 
+			npc:SetPos( Vector( tonumber(v.pos[1]), tonumber(v.pos[2]), tonumber(v.pos[3]) ) )
+			npc:SetAngles( Angle( tonumber(v.angle[1]), tonumber(v.angle[2]), tonumber(v.angle[3]) ) ) 
 			npc:Spawn()
 			npc:Activate()
 
 		end
-		Msg("[ Clothes ] : All WARDROBE was spawned !(" .. count .. ")\n")
+		Msg("[ Clothes ] : All WARDROBE was spawned !(" .. #data .. ")\n")
 	end)
 
 end
@@ -148,8 +126,8 @@ hook.Add("PostCleanupMap", "Clothes-CleanUpSpawn", clothes_spawnent() )
 --]]-----------------]]--
 
 local function clothes_addnpc(ply)
-	if not clothes.AdminTeam[ ply:GetUserGroup() ] then return end
 	if not IsValid(ply) then return end
+	if not clothes.AdminTeam[ ply:GetUserGroup() ] then return end
 
 	if not file.Exists("clothes_data/"..game.GetMap().."/npc.txt", "DATA") then
 		clothes_createdata()
@@ -179,8 +157,8 @@ end
 --]]-----------------]]--
 
 local function clothes_addwardrobe(ply)
-	if not clothes.AdminTeam[ ply:GetUserGroup() ] then return end
 	if not IsValid(ply) then return end
+	if not clothes.AdminTeam[ ply:GetUserGroup() ] then return end
 
 	if not file.Exists("clothes_data/"..game.GetMap().."/wardrobe.txt", "DATA") then
 		clothes_createdata()
@@ -285,12 +263,11 @@ net.Receive("Clothes-Server", function(len, ply)
 				DarkRP.notify(ply, 1, 1, clothes.lang[lvr].serv7)
 				return
 			end
-
-			local sendquery = "INSERT INTO clothees_data VALUES( NULL," .. sql.SQLStr( info.type ) .."," .. sql.SQLStr( info.name ) .. "," .. sql.SQLStr( info.model ) .. "," .. tonumber(info.price) .. ",'[]' , '[]' ) "
-			sql.Query( sendquery )
+ 
+			sql.Query( "INSERT INTO clothees_data VALUES( NULL," .. sql.SQLStr( info.type ) .."," .. sql.SQLStr( info.name ) .. "," .. sql.SQLStr( info.model ) .. "," .. tonumber(info.price) .. ",'[]' , '[]' ) " )
 			DarkRP.notify(ply, 0, 1, clothes.lang[lvr].serv8)
 
-		elseif where == -6 then -- [[ PLAYER BUY CLOTHE ]]
+		elseif where == -6 then -- [[ PLAYER BUY CLOTHE ]] --
 			local key = net.ReadInt(16) 
 			local npc = net.ReadEntity()
 
@@ -333,13 +310,13 @@ net.Receive("Clothes-Server", function(len, ply)
 				table.insert(buyer, ply:SteamID64() )
 				local insertbuyer = util.TableToJSON(buyer)
 
-				sql.Query([[UPDATE clothees_data SET havebuy = ']] .. insertbuyer .. [[' WHERE id = ]] .. key )
+				sql.Query([[UPDATE clothees_data SET havebuy = ]] .. sql.SQLStr( insertbuyer ) .. [[ WHERE id = ]] .. key )
 				ply:addMoney("-" .. v.price)
 				DarkRP.notify(ply, 0, 2, clothes.lang[lvr].serv13)
 
 			end
 
-		elseif where == -5 then	 --[[ ADMIN DELETE CLOTHE ]]
+		elseif where == -5 then	 --[[ ADMIN DELETE CLOTHE ]] --
 			if not clothes.AdminTeam[ ply:GetUserGroup() ] then return end
 			local key = net.ReadInt(16)
 
@@ -390,7 +367,7 @@ net.Receive("Clothes-Server", function(len, ply)
 			end
 
 			table.insert(justrestrict["groups"], groupadd)
-			sql.Query([[UPDATE clothees_data SET restrict = ']] .. util.TableToJSON(justrestrict) ..[[' WHERE  id = ]] .. itemkey)
+			sql.Query([[UPDATE clothees_data SET restrict = ]] ..	sql.SQLStr( util.TableToJSON(justrestrict) ) .. [[ WHERE  id = ]] .. itemkey)
 			DarkRP.notify(ply, 0, 2, clothes.lang[lvr].serv16)
 
 			local itemsend = sql.Query("SELECT * FROM clothees_data WHERE id =" .. itemkey )
@@ -431,7 +408,7 @@ net.Receive("Clothes-Server", function(len, ply)
 			end
 
 			table.RemoveByValue(justrestrict["groups"], groupdelete)
-			sql.Query([[UPDATE clothees_data SET restrict = ']] .. util.TableToJSON(justrestrict) ..[[' WHERE  id = ]] .. itemkey)
+			sql.Query([[UPDATE clothees_data SET restrict = ]] .. sql.SQLStr( util.TableToJSON(justrestrict) ) .. [[ WHERE  id = ]] .. itemkey)
 			DarkRP.notify(ply, 0, 2, clothes.lang[lvr].serv18)
 
 			local itemsend = sql.Query("SELECT * FROM clothees_data WHERE id =" .. itemkey )
@@ -488,7 +465,7 @@ net.Receive("Clothes-Server", function(len, ply)
 			end
 
 			table.insert(justrestrict["jobs"], jobadd)
-			sql.Query([[UPDATE clothees_data SET restrict = ']] .. util.TableToJSON(justrestrict) ..[[' WHERE  id = ]] .. itemkey)
+			sql.Query([[UPDATE clothees_data SET restrict = ]] .. sql.SQLStr( util.TableToJSON(justrestrict) ) .. [[ WHERE  id = ]] .. itemkey)
 			DarkRP.notify(ply, 0, 2, clothes.lang[lvr].serv20)
 
 			local itemsend = sql.Query("SELECT * FROM clothees_data WHERE id =" .. itemkey )
@@ -529,7 +506,7 @@ net.Receive("Clothes-Server", function(len, ply)
 			end
 
 			table.RemoveByValue(justrestrict["jobs"], jobdelete)
-			sql.Query([[UPDATE clothees_data SET restrict = ']] .. util.TableToJSON(justrestrict) ..[[' WHERE  id = ]] .. itemkey)
+			sql.Query([[UPDATE clothees_data SET restrict = ]] .. sql.SQLStr( util.TableToJSON(justrestrict) ) .. [[ WHERE  id = ]] .. itemkey)
 			DarkRP.notify(ply, 0, 2, clothes.lang[lvr].serv22)
 
 			local itemsend = sql.Query("SELECT * FROM clothees_data WHERE id =" .. itemkey )
@@ -674,7 +651,7 @@ net.Receive("Clothes-Server", function(len, ply)
 
 				local tablebuy = util.JSONToTable(v.havebuy)
 				table.RemoveByValue( tablebuy, ply:SteamID64() )
-				sql.Query( [[UPDATE clothees_data SET havebuy = ']] .. util.TableToJSON( tablebuy ) .. [[' WHERE id = ]] .. itemkey )
+				sql.Query( [[UPDATE clothees_data SET havebuy = ]] .. sql.SQLStr( util.TableToJSON( tablebuy ) ) .. [[ WHERE id = ]] .. itemkey )
 
 				local price = math.Round( tonumber(v.price) / 2 )
 				ply:addMoney( price )

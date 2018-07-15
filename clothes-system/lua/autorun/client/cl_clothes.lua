@@ -154,17 +154,15 @@ net.Receive("Clothes-Client", function(len, pl)
 		if where == -7 then
 			local npc = net.ReadEntity()
 			local data = net.ReadTable()
-			local wpos = ScrW() / 2 - 450
-			local hpos = ScrH() / 2 - 300
 
 				firstp = vgui.Create("DFrame")
 			firstp:SetSize(900, 600)
-			firstp:SetPos(wpos, ScrH())
+			firstp:SetPos(ScrW() / 2 - 450, ScrH())
 			firstp:SetTitle("")
 			firstp:SetDraggable(true)
 			firstp:ShowCloseButton(false)
 			firstp:MakePopup()
-			firstp:MoveTo(wpos, hpos, 0.25, 0, 10)
+			firstp:MoveTo(ScrW() / 2 - 450, ScrH() / 2 - 300, 0.25, 0, 10)
 
 			function firstp:Paint( w, h)
 				blurPanel(self, 5)
@@ -294,21 +292,13 @@ net.Receive("Clothes-Client", function(len, pl)
 						buyb:SetText(buybtext)
 						buyb:SetTextColor( clothes.theme[pdr].txt )
 
-						buyb.OnCursorEntered = function(self)
-								self.hover = true
-						end
-						buyb.OnCursorExited = function(self)
-								self.hover = false 
-						end
-
 						function buyb:Paint(w, h)
-							local kcol 
-							if self.hover then
-								kcol = colorhover
+							if self:IsHovered() then
+								self.Color = colorhover
 							else 
-								kcol = buybcolor
+								self.Color = buybcolor
 							end
-							draw.RoundedBox(0, 0, 0, w, h, kcol )
+							draw.RoundedBox(0, 0, 0, w, h, self.Color )
 						end
 
 						buyb.DoClick = function()
@@ -361,26 +351,17 @@ net.Receive("Clothes-Client", function(len, pl)
 			startsearch:SetPos(299, 61)
 			startsearch:SetText("")
 
-			startsearch.OnCursorEntered = function(self)
-				self.hover = true
-			end
-
-			startsearch.OnCursorExited = function(self)
-				self.hover = false
-			end
-
 			startsearch.DoClick = function()
 				clothes_draw()
 			end
 
 			function startsearch:Paint(w , h)
-				local kcol 
-				if self.hover then
-					kcol = clothes.theme[pdr].searchhover
+				if self:IsHovered() then
+					self.Color = clothes.theme[pdr].searchhover
 				else
-					kcol =  clothes.theme[pdr].search
+					self.Color =  clothes.theme[pdr].search
 				end
-				draw.RoundedBox(0, 0, 0, w, h, kcol)
+				draw.RoundedBox(0, 0, 0, w, h, self.Color)
 				surface.SetDrawColor( 255, 255, 255)
 				surface.SetMaterial( searchicon	)
 				surface.DrawTexturedRect( 0, 0, w, h )
@@ -501,7 +482,7 @@ net.Receive("Clothes-Client", function(len, pl)
 				groupadd:SetSize(150, 30)
 				groupadd:SetPos(10, 236)
 
-				for k, v in pairs( xgui.data.groups ) do
+				for k, v in pairs( xgui.data.groups ) do -- xgui.data.groups work with ULX and ULIB
 					if not table.HasValue(justrestrict["groups"],  v) then
 						groupadd:AddChoice( v )
 					end
@@ -762,21 +743,13 @@ net.Receive("Clothes-Client", function(len, pl)
 						buyb:SetText(buybtext)
 						buyb:SetTextColor( clothes.theme[pdr].txt )
 
-						buyb.OnCursorEntered = function(self)
-								self.hover = true
-						end
-						buyb.OnCursorExited = function(self)
-								self.hover = false 
-						end
-
 						function buyb:Paint(w, h)
-							local kcol 
-							if self.hover then
-								kcol = colorhover
+							if self:IsHovered() then
+								self.Color = colorhover
 							else 
-								kcol = buybcolor
+								self.Color = buybcolor
 							end
-							draw.RoundedBox(0, 0, 0, w, h, kcol )
+							draw.RoundedBox(0, 0, 0, w, h, self.Color )
 						end
 
 						buyb.DoClick = function()
@@ -792,26 +765,17 @@ net.Receive("Clothes-Client", function(len, pl)
 			startsearch:SetPos(299, 61)
 			startsearch:SetText("")
 
-			startsearch.OnCursorEntered = function(self)
-				self.hover = true
-			end
-
-			startsearch.OnCursorExited = function(self)
-				self.hover = false
-			end
-
 			startsearch.DoClick = function()
 				wardrobe_draw()
 			end
 
 			function startsearch:Paint(w , h)
-				local kcol 
-				if self.hover then
-					kcol = clothes.theme[pdr].searchhover
+				if self:IsHovered() then
+					self.Color = clothes.theme[pdr].searchhover
 				else
-					kcol =  clothes.theme[pdr].search
+					self.Color =  clothes.theme[pdr].search
 				end
-				draw.RoundedBox(0, 0, 0, w, h, kcol)
+				draw.RoundedBox(0, 0, 0, w, h, self.Color )
 				surface.SetDrawColor( 255, 255, 255)
 				surface.SetMaterial( searchicon	)
 				surface.DrawTexturedRect( 0, 0, w, h )
@@ -867,18 +831,16 @@ net.Receive("Clothes-Client", function(len, pl)
 				end
 				wardrobe_draw()
 			end
-		elseif where == -4 then -- [[ PANEL ADD MODEL]]
-			local wpos = ScrW() / 2 - 150
-			local hpos = ScrH() / 2 - 200
+		elseif where == -4 then -- [[ PANEL ADD MODEL]] --
 
 				local firstp = vgui.Create("DFrame")
 			firstp:SetSize(300, 350)
-			firstp:SetPos(wpos, ScrH())
+			firstp:SetPos(ScrW() / 2 - 150, ScrH())
 			firstp:SetTitle("")
 			firstp:SetDraggable(true)
 			firstp:ShowCloseButton(false)
 			firstp:MakePopup()
-			firstp:MoveTo(wpos, hpos, 0.25, 0, 10)
+			firstp:MoveTo(ScrW() / 2 - 150, ScrH() / 2 - 200, 0.25, 0, 10)
 
 			function firstp:Paint(w, h)
 				blurPanel(self, 5)
