@@ -17,23 +17,21 @@ function ENT:Initialize()
 end 
 
 function ENT:AcceptInput(name, caller)
-	if name == "Use" and  caller:IsPlayer() then
-		local sendtable = sql.Query("SELECT * FROM clothees_data ")
+	if name == "Use" && caller:IsPlayer() && !caller.ClothesPanelOpen then
+		caller.ClothesPanelOpen = true
 
-		if sendtable then
-			net.Start("Clothes-Client")
-			net.WriteInt(-7, 4)
-			net.WriteEntity(self)
-			net.WriteTable(sendtable)
-			net.Send(caller)
-		else
-		local uselesstable = {}
-			net.Start("Clothes-Client")
-			net.WriteInt(-7, 4)
-			net.WriteEntity(self)
-			net.WriteTable(uselesstable)
-			net.Send(caller)
-		end
+		local SendTable = sql.Query("SELECT * FROM clothees_data ")
+
+		net.Start("Clothes-Client")
+		net.WriteInt(-7, 4)
+		net.WriteEntity(self)
+		net.WriteTable(SendTable or {} )
+		net.Send(caller)
+
+		timer.Simple(2, function()
+			caller.ClothesPanelOpen = nil
+		end ) 
+
 	end
 end 
 
